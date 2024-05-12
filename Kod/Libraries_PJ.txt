@@ -1,0 +1,7 @@
+libraries:
+Firebase Arduino Client Library for ESP8266 and ESP32 by Mobitz
+ESP32 by Espressif Systems
+PubSubClient by Nick O’Leary
+Servo by michael Margolis, Arduino
+NewPing by tim Eckel
+ArduinoJson by Benoit Blanchon

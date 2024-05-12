@@ -1,0 +1,53 @@
+#include <WiFi.h>
+#include <FirebaseESP32.h>
+#include <Servo.h>
+
+#include <ArduinoJson.h> 
+
+#define WIFI_SSID "Nazev wifi site"
+#define WIFI_PASSWORD "Heslo wifi site"
+#define FIREBASE_HOST "https://database-5e783-default-rtdb.europe-west1.firebasedatabase.app/test"
+
+#define MOTOR_PIN 13 
+#define MOTOR_MIN_ANGLE 0 
+#define MOTOR_MAX_ANGLE 180 
+#define MOTOR_ROTATION_ANGLE 120 
+
+WiFiClient wifiClient;
+FirebaseData firebaseData;
+Servo motor;
+
+void setup() {
+  Serial.begin(115200);
+
+  motor.attach(MOTOR_PIN);
+  motor.write(MOTOR_MIN_ANGLE);
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println("Connected to WiFi");
+
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH, wifiClient);
+
+  
+  DynamicJsonDocument jsonDoc(200);
+
+  
+  jsonDoc["sensor"] = "servo";
+  jsonDoc["angle"] = MOTOR_MIN_ANGLE;
+
+  
+  String jsonString;
+  serializeJson(jsonDoc, jsonString);
+
+  
+  Firebase.setString(firebaseData, FIREBASE_PATH, jsonString);
+}
+
+void loop() {
+  
+}

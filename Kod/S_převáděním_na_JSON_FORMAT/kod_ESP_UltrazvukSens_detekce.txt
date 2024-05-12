@@ -1,0 +1,73 @@
+#include <WiFi.h>
+#include <FirebaseESP32.h>
+#include <NewPing.h>
+
+
+#define WIFI_SSID "Nazev wifi site"
+#define WIFI_PASSWORD "Heslo wifi site"
+#define FIREBASE_HOST "https://database-5e783-default-rtdb.europe-west1.firebasedatabase.app/test"
+
+
+
+#define FIREBASE_PATH "/test/message"
+
+
+#define TRIGGER_PIN 12
+#define ECHO_PIN 14
+
+
+#define DEFAULT_DISTANCE 5
+
+WiFiClient wifiClient;
+FirebaseData firebaseData;
+
+void setup() {
+  Serial.begin(115200);
+
+  
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println("Connected to WiFi");
+
+  
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH, wifiClient);
+  delay(1000); 
+
+  
+  pinMode(TRIGGER_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+}
+
+void loop() {
+  
+  float distance = measureDistance();
+
+  
+  if (distance != DEFAULT_DISTANCE) {
+    
+    if (Firebase.setInt(firebaseData, FIREBASE_PATH, 1)) {
+      Serial.println("Message saved to Firebase: 1");
+    } else {
+      Serial.println("Failed to save message to Firebase");
+    }
+    delay(1000); 
+  }
+
+  delay(100); 
+}
+
+float measureDistance() {
+  digitalWrite(TRIGGER_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIGGER_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIGGER_PIN, LOW);
+
+  float duration = pulseIn(ECHO_PIN, HIGH);
+  float distance = duration * 0.034 / 2; // Calculate distance in cm
+  return distance;
+}

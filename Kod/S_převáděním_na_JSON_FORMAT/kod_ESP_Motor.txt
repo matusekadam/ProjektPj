@@ -1,0 +1,79 @@
+#include <WiFi.h>
+#include <FirebaseESP32.h>
+#include <Servo.h>
+
+
+#define WIFI_SSID "Nazev wifi site"
+#define WIFI_PASSWORD "Heslo wifi site"
+#define FIREBASE_HOST "https://database-5e783-default-rtdb.europe-west1.firebasedatabase.app/test"
+
+
+
+#define FIREBASE_PATH "/test/int"
+
+
+#define MOTOR_PIN 13 
+#define MOTOR_MIN_ANGLE 0 
+#define MOTOR_MAX_ANGLE 180 
+#define MOTOR_ROTATION_ANGLE 120 
+
+WiFiClient wifiClient;
+FirebaseData firebaseData;
+Servo motor;
+
+void setup() {
+  Serial.begin(115200);
+  
+  
+  motor.attach(MOTOR_PIN);
+  motor.write(MOTOR_MIN_ANGLE);
+
+ 
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println("Connected to WiFi");
+
+ 
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH, wifiClient);
+
+  
+  Firebase.setStreamCallback(streamCallback, streamTimeoutCallback);
+}
+
+void loop() {
+  
+  Firebase.loop();
+}
+
+void streamCallback(StreamData data) {
+  if (data.dataType() == "int" && data.dataPath() == FIREBASE_PATH) {
+    int value = data.intData();
+    Serial.print("Received value from Firebase: ");
+    Serial.println(value);
+    
+    
+    if (value == 1) {
+      rotateMotor();
+    }
+  }
+}
+
+void streamTimeoutCallback(bool timeout) {
+  if (timeout) {
+    Serial.println("Stream timeout occurred, reconnecting...");
+    if (!Firebase.beginStream(wifiClient)) {
+      Serial.println("Failed to reconnect to Firebase stream!");
+    }
+  }
+}
+
+void rotateMotor() {
+  // Rotate the motor to the specified angle
+  motor.write(MOTOR_MIN_ANGLE + MOTOR_ROTATION_ANGLE);
+  delay(1000); 
+  motor.write(MOTOR_MIN_ANGLE); 
+}
