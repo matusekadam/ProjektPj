@@ -4,6 +4,6 @@ Adam Matušek a Ondřej Sehnal.
 ### Jaký projekt jsme si vybrali:
 Jako projekt jsme si vybrali přístroj na automatické vydávání tabletek/léků, kde si uživatel může v jednoduché aplikaci různě nastavit kdy má tabletky/léky dostávat.
 ### Proč zrovna tento nápad:
-Tento nápad na projekt jsme si vybrali, protože si myslíme, že by tento přístroj byl užitečný pro lidi kteří užívají mnoho léku, např. několikrát denně a často na ně zapomínají. A díky toho že aplikace je opravdu jednoduchá, tak by tento projekt mohl být určený pro nejen maldší ale i starší lidi.
+Tento nápad na projekt jsme si vybrali, protože si myslíme, že by tento přístroj byl užitečný pro lidi, kteří užívají mnoho léku, např. několikrát denně a často na ně zapomínají. A díky toho že aplikace je opravdu jednoduchá, tak by tento projekt mohl být určený pro nejen maldší ale i starší lidi.
 
 
